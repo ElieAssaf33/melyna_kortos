@@ -59,3 +59,4 @@ class Card:
  #take from bottom
 #take random
 #mastom apie žaidimą
+print("\u2660")
