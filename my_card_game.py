@@ -29,16 +29,27 @@ class Card():
             print("You won")  
         elif player == computer:
             print("Draw, flip again")
+            computer = print(randint(1, 14))
+            player = print(randint(1,14))
+            
+
+        
 
 while True:
-    player = Card()
-    player = player.convert_number_into_symbol(f"{randint(1, 4)}")
-    computer = Card()
-    computer = computer.convert_number_into_symbol(f"{randint(1, 4)}")
-    compare = Card()
-    compare.compare_card_rank(computer,player)
-
-    break
+    print("War")
+    choice = input("0)Exit\n1)Flip\nPick a number:")
+    if choice == '1':
+        player = Card()
+        player = player.convert_number_into_symbol(f"{randint(1, 4)}")
+        computer = Card()
+        computer = computer.convert_number_into_symbol(f"{randint(1, 4)}")
+        compare = Card()
+        compare.compare_card_rank(computer,player)
+    elif choice == '0':
+        print("Goodbye")
+        break
+    else:
+        print("Wrong input")
 
 
 

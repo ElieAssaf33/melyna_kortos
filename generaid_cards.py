@@ -7,23 +7,23 @@ def build_deck(value, suit, polygon):
     else:
         fill_color = 'black'
 
-    im = Image.new("RGB", (360, 430), 'lightgray')
-    draw = ImageDraw.Draw(im)
+        im = Image.new("RGB", (360, 430), 'lightgray')
+        draw = ImageDraw.Draw(im)
 
-    draw.text((10, 10), text=value, fill=fill_color,
-              font=font, stroke_width=2, stroke_fill="#0f0")
+        draw.text((10, 10), text=value, fill=fill_color,
+        font=font, stroke_width=2, stroke_fill="#0f0")
 
     if value == '10':
         draw.text((220, 300), text=value, fill=fill_color, font=font,
-                  stroke_width=2, stroke_fill='#0f0')
+        stroke_width=2, stroke_fill='#0f0')
     else:
-        draw.text((275, 300), text=value, fill=fill_color, font=font,
-                  stroke_width=2, stroke_fill='#0f0')
+        draw.s((275, 300), text=value, fill=fill_color, font=font,
+        stroke_width=2, stroke_fill='#0f0')
 
-    draw.polygon(polygon, fill=fill_color, outline='yellow')
-    path = f'{suit}_{value}.png'
-    total_path = os.path.join('card_deck_1', path)
-    im.save(total_path, 'png')
+        draw.polygon(polygon, fill=fill_color, outline='yellow')
+        path = f'{suit}_{value}.png'
+        total_path = os.path.join('card_deck_1', path)
+        im.save(total_path, 'png')
 
 def main():
     base_cards = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
@@ -47,18 +47,17 @@ def main():
     for key, value in suits.items():
         for card in base_cards:
             build_deck(card, key, value)
+            print('Your deck is complete!')
 
-    print('Your deck is complete!')
+    if __name__ == '__main__':
+        os.makedirs('card_deck_1', exist_ok=True)
 
-if __name__ == '__main__':
-    os.makedirs('card_deck_1', exist_ok=True)
+        if sys.platform == 'linux':
+            font = ImageFont.truetype("arial.ttf", 120)
+        elif sys.platform == 'win32':
+            font = ImageFont.truetype('arial.ttf', 120)
+        elif sys.platform == 'darwin':
+            # You need to specify the correct font path for macOS
+            pass
 
-    if sys.platform == 'linux':
-        font = ImageFont.truetype("arial.ttf", 120)
-    elif sys.platform == 'win32':
-        font = ImageFont.truetype('arial.ttf', 120)
-    elif sys.platform == 'darwin':
-        # You need to specify the correct font path for macOS
-        pass
-
-    main()
+main()
