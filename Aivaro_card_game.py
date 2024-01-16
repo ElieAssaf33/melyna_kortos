@@ -1,5 +1,5 @@
 import random   # For random shuffle function
-import time # For sleep function for better visibility
+import time # For sleep function for better visibility. If you don't want to use this, you can remove the import time and the sleep function.
 
 # Define the unconverted deck with ranks and symbols
 unconverted_deck = {'2❤️': 2, '3❤️': 3, '4❤️': 4, '5❤️': 5, '6❤️': 6, '7❤️': 7, '8❤️': 8, '9❤️': 9, '10❤️': 10, 'J❤️': 11,
@@ -35,7 +35,7 @@ comp_war_at_risk = []
 # Main game loop
 while turns > 0: 
     print(f'\n\nRemaining Turns: {turns}') # Display remaining turns
-    try:            # Try means that if an error is thrown, the program will continue to run
+    try:            # Try means that if an error is thrown, the program will continue to run 
         input("Press Enter to draw cards...") # Pause for better visibility
 
         print(f"\nYour card: {player_primary[play_card_index]}") # Display player's card
@@ -47,17 +47,18 @@ while turns > 0:
             player_primary.pop(play_card_index) # Remove cards from player's deck
             computer_primary.pop(comp_card_index) # Remove cards from computer's deck
 
-            print(f"Player wins the round!\nPlayer discard: {player_secondary}")    # Display discard pile
+            print(f"Player wins the round!\nPlayer discard: {player_secondary}\nCPU discard: {computer_secondary}")    # Display discard pile
         elif player_primary[play_card_index] < computer_primary[comp_card_index]: # Check if player's card is lower than computer's card
             # Computer wins the round
             computer_secondary.extend([player_primary[play_card_index], computer_primary[comp_card_index]]) # Add cards to discard pile. .extend() means list concatenation function and list conectenation is done by adding the elements of one list to the end of another list
             player_primary.pop(play_card_index) # Remove cards from player's deck
             computer_primary.pop(comp_card_index)
 
-            print(f"Computer wins the round!\nPlayer discard: {player_secondary}") # Display discard pile
-        else:
+            print(f"Computer wins the round!\nPlayer discard: {player_secondary}\n CPU discard: {computer_secondary}") # Display discard pile
+        elif player_primary[play_card_index] == computer_primary[comp_card_index]:
+            print("It's a tie! Going to war!")
             # It's a tie, going to war (optional)
-            print("It's a tie! Going to war...")
+            
 
     except IndexError:  
         # Handle index errors if cards run out
@@ -66,13 +67,12 @@ while turns > 0:
         computer_primary.extend(computer_secondary)     # Add cards from discard pile to computer's deck
         random.shuffle(player_primary)
         random.shuffle(computer_primary)
-        player_secondary = []
+        player_secondary = [] 
         computer_secondary = []
-        turns -= 1
+        turns -= 1 
 
 # Determine the winner of the game
-if len(player_primary) > len(computer_primary):
+if len(player_primary) > len(computer_primary): # Check if player's deck is longer than computer's deck
     print("Player wins the game!")
 else:
     print("Computer wins the game!")
-
