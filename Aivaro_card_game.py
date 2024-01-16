@@ -1,95 +1,78 @@
-#Famous card game - War
-import random
-ranks=[2,3,4,5,6,7,8,9,10,'J','K','A','Q']
-design =['Hearts','Diamonds','Spades','Clubs']
+import random   # For random shuffle function
+import time # For sleep function for better visibility
 
-class Deck:
-    def __init__(self):
-        print("Creating new ordered deck!!")
-        self.cards=[(j,i) for j in design for i in ranks] #j means suit and i means rank
-    def shuffle(self):
-        print("Shuffling Deck")
-        random.shuffle(self.cards)
-    def split_half(self):
-        return (self.cards[:26],self.cards[26:]) 
+# Define the unconverted deck with ranks and symbols
+unconverted_deck = {'2❤️': 2, '3❤️': 3, '4❤️': 4, '5❤️': 5, '6❤️': 6, '7❤️': 7, '8❤️': 8, '9❤️': 9, '10❤️': 10, 'J❤️': 11,
+                    'Q❤️': 12, 'K❤️': 13, 'A❤️': 15, '2♠️': 2, '3♠️': 3, '4♠️': 4, '5♠️': 5, '6♠️': 6, '7♠️': 7, '8♠️': 8,
+                    '9♠️': 9, '10♠️': 10, 'J♠️': 11, 'Q♠️': 12, 'K♠️': 13, 'A♠️': 15, '2♦️': 2, '3♦️': 3, '4♦️': 4, '5♦️': 5,
+                    '6♦️': 6, '7♦️': 7, '8♦️': 8, '9♦️': 9, '10♦️': 10, 'J♦️': 11, 'Q♦️': 12, 'K♦️': 13, 'A♦️': 15,
+                    '2︎♣️': 2, '3♣️': 3, '4♣️': 4, '5♣️': 5, '6♣️': 6, '7♣️': 7, '8♣️': 8, '9♣️': 9, '10♣️': 10, 'J♣️': 11,
+                    'Q♣️': 12, 'K♣️': 13, 'A♣️': 15} # This is a dictionary of the unconverted deck
 
-class Hand:
-    def __init__(self,cards_count):
-         self.cards_count=cards_count
-    def __str__(self):
-        return "Contains {} cards".format(len(self.cards_count))
-    def add(self,added_cards):
-        self.cards_count.extend(added_cards)
-    def remove(self):
-        return self.cards_count.pop()
-class Player:
-    def __init__(self,name,hand):
-        self.name=name
-        self.hand=hand
-    def play_card(self):
-        drawn_card = self.hand.remove()
-        print("{} has placed : {}".format(self.name,drawn_card))
-        print("\n")
-        return drawn_card
-    def remove_war_cards(self):
-        war_cards=[]
-        if len(self.hand.cards_count)<3:
-            return self.hand.cards_count
+# Shuffle the deck
+deckn = list(unconverted_deck)     # deckn is a list of tuples 
+random.shuffle(deckn)
+
+# Split the deck between computer and player
+computer_primary = deckn[1::2] # computer_primary is a list of tuples [1::2] means every second element of the list
+player_primary = deckn[0::2] # player_primary is a list of tuples [0::2] means every first element of the list 
+random.shuffle(player_primary) 
+random.shuffle(computer_primary)
+
+# Initialize discard piles for player and computer
+player_secondary = []
+computer_secondary = []
+
+# Set the number of turns
+turns = 5
+
+# Initialize card indices and war-at-risk lists
+play_card_index = 0 
+comp_card_index = 0
+play_war_at_risk = []   
+comp_war_at_risk = []
+
+# Main game loop
+while turns > 0: 
+    print(f'\n\nRemaining Turns: {turns}') # Display remaining turns
+    try:            # Try means that if an error is thrown, the program will continue to run
+        input("Press Enter to draw cards...") # Pause for better visibility
+
+        print(f"\nYour card: {player_primary[play_card_index]}") # Display player's card
+        print(f"Opponent's card: {computer_primary[comp_card_index]}") # Display computer's card
+
+        if player_primary[play_card_index] > computer_primary[comp_card_index]: # Check if player's card is higher than computer's card
+            # Player wins the round
+            player_secondary.extend([player_primary[play_card_index], computer_primary[comp_card_index]]) # Add cards to discard pile. .extend() is a list concatenation function
+            player_primary.pop(play_card_index) # Remove cards from player's deck
+            computer_primary.pop(comp_card_index) # Remove cards from computer's deck
+
+            print(f"Player wins the round!\nPlayer discard: {player_secondary}")    # Display discard pile
+        elif player_primary[play_card_index] < computer_primary[comp_card_index]: # Check if player's card is lower than computer's card
+            # Computer wins the round
+            computer_secondary.extend([player_primary[play_card_index], computer_primary[comp_card_index]]) # Add cards to discard pile. .extend() means list concatenation function and list conectenation is done by adding the elements of one list to the end of another list
+            player_primary.pop(play_card_index) # Remove cards from player's deck
+            computer_primary.pop(comp_card_index)
+
+            print(f"Computer wins the round!\nPlayer discard: {player_secondary}") # Display discard pile
         else:
-            for x in range(3):
-                war_cards.append(self.hand.cards_count.pop())
-            return war_cards
-    def still_has_cards(self):
-        """
-        Return true if player has cards left
-        """
-        return len(self.hand.cards_count) != 0
-print("Welcome to War, Let's run into our game...")
-# Create new deck and split it into half
-d= Deck()
-d.shuffle()
-half1,half2=d.split_half()
+            # It's a tie, going to war (optional)
+            print("It's a tie! Going to war...")
 
-#Create both players !
-comp = Player("Computer",Hand(half1))
-name=input("Enter your name")
-human = Player(name,Hand(half2))
+    except IndexError:  
+        # Handle index errors if cards run out
+        print("Out of cards. Starting a new round...")
+        player_primary.extend(player_secondary) # Add cards from discard pile to player's deck
+        computer_primary.extend(computer_secondary)     # Add cards from discard pile to computer's deck
+        random.shuffle(player_primary)
+        random.shuffle(computer_primary)
+        player_secondary = []
+        computer_secondary = []
+        turns -= 1
 
-total_rounds =0
-war_count = 0
+# Determine the winner of the game
+if len(player_primary) > len(computer_primary):
+    print("Player wins the game!")
+else:
+    print("Computer wins the game!")
 
-while human.still_has_cards() and comp.still_has_cards():
-    total_rounds += 1
-    print("Time for a new round")
-    print("Here are the current standings")
-    print(human.name + "has the count:"+str(len(human.hand.cards_count)))
-    print(comp.name + "has the count:"+str(len(comp.hand.cards_count)))
-    print("Play a card!")
-    print("\n")
-
-    table_cards = []
-
-    c_card = comp.play_card()
-    p_card = human.play_card()
-    table_cards.append(c_card)
-    table_cards.append(p_card)
-
-    if c_card[1] == p_card[1]:
-        war_count += 1
-        print("War!!")
-        table_cards.extend(human.remove_war_cards())
-        table_cards.extend(comp.remove_war_cards())
-
-        if ranks.index(c_card[1]) < ranks.index(p_card[1]):
-            human.hand.add(table_cards)
-        else:
-            comp.hand.add(table_cards)
-    else:
-        if ranks.index(c_card[1]) < ranks.index(p_card[1]):
-            human.hand.add(table_cards)
-        else:
-            comp.hand.add(table_cards)
-print("Game over,number of rounds:"+str(total_rounds))
-print("A war happened " + str(war_count) +" times")
-print("Does the computer still have cards?\t",str(comp.still_has_cards()))
-print("Does the Human player still have cards?\t:",str(human.still_has_cards()))
